@@ -1,0 +1,65 @@
+{
+  "name": "thokozani/laravel-openapi",
+  "description": "Generate OpenAPI Specification for Laravel Applications",
+  "keywords": [
+    "laravel",
+    "openapi",
+    "api",
+    "documentation",
+    "docs",
+    "rest",
+    "swagger"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Vladimir Yuldashev",
+      "email": "misterio92@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "ext-json": "*",
+    "doctrine/annotations": "^1.6",
+    "doctrine/dbal": "^2.9",
+    "thokozani/oooas": "master",
+    "laravel/framework": "5.8.*|^6.0|^7.0",
+    "phpdocumentor/reflection-docblock": "^5.0",
+    "roave/better-reflection": "^4.0"
+  },
+  "repositories": [
+    {
+        "type": "vcs",
+        "url":  "https://github.com/centricomen/oooas-master"
+    }
+  ],
+  "require-dev": {
+    "fzaninotto/faker": "^1.8",
+    "orchestra/testbench": "^4.3",
+    "phpunit/phpunit": "^8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vyuldashev\\LaravelOpenApi\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Vyuldashev\\LaravelOpenApi\\Tests\\": "tests/",
+      "Examples\\Petstore\\": "examples/petstore/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Vyuldashev\\LaravelOpenApi\\OpenApiServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
