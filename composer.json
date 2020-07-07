@@ -30,8 +30,8 @@
   },
   "repositories": [
     {
-        "type": "git",
-        "url":  "https://github.com/centricomen/oooas-master.git"
+        "type": "vcs",
+        "url":  "https://github.com/centricomen/oooas-master"
     }
   ],
   "require-dev": {

@@ -29,8 +29,16 @@ class GenerateCommand extends Command
 
         # $this->line( $data );
 
-        Storage::disk(  'public' ) -> put( '/openapi/openapi.json', $data );
+        $this -> info( 'Generating documentation files...' );
 
-        $this -> info( 'Generated JSON file on storage/public/openapi folder' );
+        # First write to a public disk.
+        Storage::disk(  'public' ) -> put( '/openapi/openapi.json', $data );
+        $this -> info( 'Generated JSON file on storage disk storage/public/openapi' );
+
+        # Secondly write to a publicly accessable folder
+        $basePath = base_path();
+        $filePath = $basePath . '/public/openapi/openapi.json';
+        file_put_contents( $filePath, $data );
+        $this -> info( 'Generated JSON file on public path ' . $filePath );
     }
 }
