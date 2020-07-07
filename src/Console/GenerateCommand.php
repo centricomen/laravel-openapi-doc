@@ -37,13 +37,16 @@ class GenerateCommand extends Command
 
         # Secondly write to a publicly accessable folder
         $basePath = base_path();
-        $filePath = $basePath . '/public/openapi/openapi.json';
+        $filePath = $basePath . '/public/storage/openapi/openapi.json';
         
         if( ! file_exists( $basePath . '/public' ) )
             mkdir( $basePath . '/public' );
 
-        if( ! file_exists( $basePath . '/public/openapi' ) )
-            mkdir( $basePath . '/public/openapi' );
+        if( ! file_exists( $basePath . '/public/storage' ) )
+            mkdir( $basePath . '/public/storage' );
+
+        if( ! file_exists( $basePath . '/public/storage/openapi' ) )
+            mkdir( $basePath . '/public/storage/openapi' );
 
         $handle = fopen( $filePath, 'w' );
         fwrite( $handle, $data );
