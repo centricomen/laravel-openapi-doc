@@ -28,29 +28,35 @@ class GenerateCommand extends Command
             ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 
         # $this->line( $data );
-
         $this -> info( 'Generating documentation files...' );
 
-        # First write to a public disk.
-        Storage::disk(  'public' ) -> put( '/openapi/openapi.json', $data );
-        $this -> info( 'Generated JSON file on storage disk storage/public/openapi' );
+        foreach( $data as $file => $apiDocumentation ) {
 
-        # Secondly write to a publicly accessable folder
-        $basePath = base_path();
-        $filePath = $basePath . '/public/storage/openapi/openapi.json';
-        
-        if( ! file_exists( $basePath . '/public' ) )
-            mkdir( $basePath . '/public' );
+            $this -> info( 'Writing for ' . $file );
 
-        if( ! file_exists( $basePath . '/public/storage' ) )
-            mkdir( $basePath . '/public/storage' );
+            # First write to a public disk.
+            Storage::disk(  'public' ) -> put( '/openapi/openapi.json', $apiDocumentation );
+            $this -> info( 'Generated JSON file on storage disk storage/public/openapi' );
 
-        if( ! file_exists( $basePath . '/public/storage/openapi' ) )
-            mkdir( $basePath . '/public/storage/openapi' );
+            # Secondly write to a publicly accessable folder
+            $basePath = base_path();
+            $filePath = $basePath . '/public/storage/openapi/openapi.json';
+            
+            if( ! file_exists( $basePath . '/public' ) )
+                mkdir( $basePath . '/public' );
 
-        $handle = fopen( $filePath, 'w' );
-        fwrite( $handle, $data );
-        fclose( $handle );
-        $this -> info( 'Generated JSON file on public path ' . $filePath );
+            if( ! file_exists( $basePath . '/public/storage' ) )
+                mkdir( $basePath . '/public/storage' );
+
+            if( ! file_exists( $basePath . '/public/storage/openapi' ) )
+                mkdir( $basePath . '/public/storage/openapi' );
+
+            $handle = fopen( $filePath, 'w' );
+            fwrite( $handle, $apiDocumentation );
+            fclose( $handle );
+            $this -> info( 'Generated JSON file on public path ' . $filePath );
+
+        }
+
     }
 }

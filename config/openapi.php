@@ -10,6 +10,14 @@ return [
                 'title' => config('app.name'),
                 'description' => null,
                 'version' => '1.0.0',
+                'x-logo' => array(
+                    'url' => null
+                )
+            ],
+
+            'files' => [
+                // Include the files you want to render to here. "openapi.json" is the default. DO NOT REMOVE IT
+                'openapi.json'
             ],
 
             'servers' => [

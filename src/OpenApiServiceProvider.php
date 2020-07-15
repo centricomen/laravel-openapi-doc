@@ -44,7 +44,8 @@ class OpenApiServiceProvider extends ServiceProvider
                 $app[ServersBuilder::class],
                 $app[TagsBuilder::class],
                 $app[PathsBuilder::class],
-                $app[ComponentsBuilder::class]
+                $app[ComponentsBuilder::class],
+                $app[FilesBuilder::class]
             );
         });
 
