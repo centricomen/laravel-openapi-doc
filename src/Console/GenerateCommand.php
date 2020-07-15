@@ -24,23 +24,25 @@ class GenerateCommand extends Command
         }
 
         $data = $generator
-            ->generate($this->argument('collection'))
-            ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+            ->generate($this->argument('collection'));
 
         # $this->line( $data );
         $this -> info( 'Generating documentation files...' );
 
         foreach( $data as $file => $apiDocumentation ) {
 
+            $apiDocumentation = $apiDocumentation
+                                    ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+
             $this -> info( 'Writing for ' . $file );
 
             # First write to a public disk.
-            Storage::disk(  'public' ) -> put( '/openapi/openapi.json', $apiDocumentation );
+            Storage::disk(  'public' ) -> put( '/openapi/' . $file, $apiDocumentation );
             $this -> info( 'Generated JSON file on storage disk storage/public/openapi' );
 
-            # Secondly write to a publicly accessable folder
+            # Secondly write to a publicly accessible folder
             $basePath = base_path();
-            $filePath = $basePath . '/public/storage/openapi/openapi.json';
+            $filePath = $basePath . '/public/storage/openapi/' . $file;
             
             if( ! file_exists( $basePath . '/public' ) )
                 mkdir( $basePath . '/public' );

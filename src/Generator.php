@@ -9,6 +9,7 @@ use Vyuldashev\LaravelOpenApi\Builders\InfoBuilder;
 use Vyuldashev\LaravelOpenApi\Builders\PathsBuilder;
 use Vyuldashev\LaravelOpenApi\Builders\ServersBuilder;
 use Vyuldashev\LaravelOpenApi\Builders\TagsBuilder;
+use Vyuldashev\LaravelOpenApi\Builders\FilesBuilder;
 
 class Generator
 {
@@ -54,7 +55,7 @@ class Generator
                 $info = $this->infoBuilder->build(Arr::get($this->config, 'collections.' . $collection . '.info', []));
                 $servers = $this->serversBuilder->build(Arr::get($this->config, 'collections.' . $collection . '.servers', []));
                 $tags = $this->tagsBuilder->build(Arr::get($this->config, 'collections.' . $collection . '.tags', []));
-                $paths = $this->pathsBuilder->build($collection, Arr::get($middlewares, 'paths', []));
+                $paths = $this->pathsBuilder->build($collection, Arr::get($middlewares, 'paths', []), $file);
                 $components = $this->componentsBuilder->build($collection);
 
                 $openApi = OpenApi::create()

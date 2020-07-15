@@ -9,6 +9,6 @@ class FilesBuilder
 {
     public function build(array $config): array
     {
-        return $config[ 'files' ];
+        return $config;
     }
 }

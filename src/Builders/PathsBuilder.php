@@ -17,6 +17,8 @@ class PathsBuilder
 {
     protected $operationsBuilder;
 
+    protected $file;
+
     public function __construct(
         OperationsBuilder $operationsBuilder
     ) {
@@ -30,8 +32,12 @@ class PathsBuilder
      */
     public function build(
         string $collection,
-        array $middlewares
+        array $middlewares,
+        string $file = null
     ): array {
+
+        $this->file = $file;
+
         return $this->routes()
             ->filter(static function (RouteInformation $routeInformation) use ($collection) {
                 /** @var CollectionAnnotation|null $collectionAnnotation */
@@ -76,6 +82,7 @@ class PathsBuilder
 
     protected function routes(): Collection
     {
+        $self = clone $this;
         return collect(app(Router::class)->getRoutes())
             ->filter(static function (Route $route) {
                 return $route->getActionName() !== 'Closure';
@@ -83,7 +90,7 @@ class PathsBuilder
             ->map(static function (Route $route) {
                 return RouteInformation::createFromRoute($route);
             })
-            ->filter(static function (RouteInformation $route) {
+            ->filter(static function (RouteInformation $route) use ($self) {
                 $pathItem = collect($route->controllerAnnotations)->first(static function ($annotation) {
                     return $annotation instanceof Annotations\PathItem;
                 });
@@ -92,7 +99,16 @@ class PathsBuilder
                     return $annotation instanceof Annotations\Operation;
                 });
 
-                return $pathItem && $operation;
+                $file = collect($route->actionAnnotations)->first(static function ($annotation) {
+                    return $annotation instanceof Annotations\File;
+                });
+
+                if($file == null) {
+                    $file = new Annotations\File();
+                    $file->name = 'openapi.json';
+                }
+
+                return $pathItem && $operation && ($file->name == $self->file);
             });
     }
 }
