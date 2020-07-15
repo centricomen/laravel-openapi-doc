@@ -58,6 +58,8 @@ class Generator
                 $paths = $this->pathsBuilder->build($collection, Arr::get($middlewares, 'paths', []), $file);
                 $components = $this->componentsBuilder->build($collection);
 
+                sort( $paths );
+
                 $openApi = OpenApi::create()
                     ->openapi('2.0')
                     ->info($info)
