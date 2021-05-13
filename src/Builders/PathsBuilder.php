@@ -28,12 +28,13 @@ class PathsBuilder
     /**
      * @param string $collection
      * @param PathMiddleware[] $middlewares
+     * @param mixed $file
      * @return array
      */
     public function build(
         string $collection,
         array $middlewares,
-        string $file = null
+        $file = null
     ): array {
 
         $this->file = $file;
@@ -108,7 +109,17 @@ class PathsBuilder
                     $file->name = 'openapi.json';
                 }
 
-                return $pathItem && $operation && ($file->name == $self->file);
+                if (is_array($file->name)) {
+                    $fileFound = false;
+                    foreach ($file->name as $item) {
+                        if ($item == $self->file) {
+                            $fileFound = true;
+                            break;
+                        }
+                    }
+                } else $fileFound = $file->name == $self->file;
+
+                return $pathItem && $operation && $fileFound;
             });
     }
 }
