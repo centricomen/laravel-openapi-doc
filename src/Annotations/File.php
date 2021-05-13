@@ -9,6 +9,5 @@ namespace Vyuldashev\LaravelOpenApi\Annotations;
  */
 class File
 {
-    /** @var string */
     public $name;
 }
