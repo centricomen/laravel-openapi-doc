@@ -16,10 +16,14 @@
     {
       "name": "Vladimir Yuldashev",
       "email": "misterio92@gmail.com"
+    },
+    {
+      "name": "Thokozani Mhlongo",
+      "email": "te.mhlongo91@gmail.com"
     }
   ],
   "require": {
-    "php": "^7.2",
+    "php": "^7.3|^8.0",
     "ext-json": "*",
     "doctrine/annotations": "^1.6",
     "doctrine/dbal": "^2.9",
