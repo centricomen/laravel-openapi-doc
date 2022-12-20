@@ -23,11 +23,11 @@
     }
   ],
   "require": {
-    "php": "^7.3|^8.0",
+    "php": "^8.0",
     "ext-json": "*",
     "doctrine/annotations": "^1.6",
     "doctrine/dbal": "^2.9",
-    "thokozani/oooas": "dev-dev",
+    "thokozani/oooas": "dev-php-8.0",
     "laravel/framework": "5.8.*|^6.0|^7.0|^8.0|^9.0",
     "phpdocumentor/reflection-docblock": "^5.0"
   },
