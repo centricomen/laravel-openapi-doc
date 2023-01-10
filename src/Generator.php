@@ -23,8 +23,7 @@ class Generator
     protected TagsBuilder $tagsBuilder;
     protected PathsBuilder $pathsBuilder;
     protected ComponentsBuilder $componentsBuilder;
-
-    protected FilesBuilder $filesBuilder;
+    protected $filesBuilder;
 
     public function __construct(
         array             $config,
@@ -33,7 +32,7 @@ class Generator
         TagsBuilder       $tagsBuilder,
         PathsBuilder      $pathsBuilder,
         ComponentsBuilder $componentsBuilder,
-        FilesBuilder      $filesBuilder = null
+        $filesBuilder = null
     )
     {
         $this->config = $config;
