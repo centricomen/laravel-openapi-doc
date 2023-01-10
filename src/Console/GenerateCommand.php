@@ -17,8 +17,8 @@ class GenerateCommand extends Command
     {
         $collectionExists = collect(config('openapi.collections'))->has($this->argument('collection'));
 
-        if (! $collectionExists) {
-            $this->error('Collection "'.$this->argument('collection').'" does not exist.');
+        if (!$collectionExists) {
+            $this->error('Collection "' . $this->argument('collection') . '" does not exist.');
 
             return;
         }
@@ -27,38 +27,37 @@ class GenerateCommand extends Command
             ->generate($this->argument('collection'));
 
         # $this->line( $data );
-        $this -> info( 'Generating documentation files...' );
+        $this->info('Generating documentation files...');
 
-        foreach( $data as $file => $apiDocumentation ) {
+        foreach ($data as $file => $apiDocumentation) {
 
             $apiDocumentation = $apiDocumentation
-                                    ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+                ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-            $this -> info( 'Writing for ' . $file );
+            $this->info('Writing for ' . $file);
 
             # First write to a public disk.
-            Storage::disk(  'public' ) -> put( '/openapi/' . $file, $apiDocumentation );
-            $this -> info( 'Generated JSON file on storage disk storage/public/openapi' );
+            Storage::disk('public')->put('/openapi/' . $file, $apiDocumentation);
+            $this->info('Generated JSON file on storage disk storage/public/openapi');
 
             # Secondly write to a publicly accessible folder
             $basePath = base_path();
             $filePath = $basePath . '/public/storage/openapi/' . $file;
-            
-            if( ! file_exists( $basePath . '/public' ) )
-                mkdir( $basePath . '/public' );
 
-            if( ! file_exists( $basePath . '/public/storage' ) )
-                mkdir( $basePath . '/public/storage' );
+            if (!file_exists($basePath . '/public'))
+                mkdir($basePath . '/public');
 
-            if( ! file_exists( $basePath . '/public/storage/openapi' ) )
-                mkdir( $basePath . '/public/storage/openapi' );
+            if (!file_exists($basePath . '/public/storage'))
+                mkdir($basePath . '/public/storage');
 
-            $handle = fopen( $filePath, 'w' );
-            fwrite( $handle, $apiDocumentation );
-            fclose( $handle );
-            $this -> info( 'Generated JSON file on public path ' . $filePath );
+            if (!file_exists($basePath . '/public/storage/openapi'))
+                mkdir($basePath . '/public/storage/openapi');
+
+            $handle = fopen($filePath, 'w');
+            fwrite($handle, $apiDocumentation);
+            fclose($handle);
+            $this->info('Generated JSON file on public path ' . $filePath);
 
         }
-
     }
 }

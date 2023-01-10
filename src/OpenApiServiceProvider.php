@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Vyuldashev\LaravelOpenApi;
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Vyuldashev\LaravelOpenApi\Builders\Components\CallbacksBuilder;
 use Vyuldashev\LaravelOpenApi\Builders\Components\RequestBodiesBuilder;
@@ -16,49 +17,48 @@ use Vyuldashev\LaravelOpenApi\Builders\InfoBuilder;
 use Vyuldashev\LaravelOpenApi\Builders\PathsBuilder;
 use Vyuldashev\LaravelOpenApi\Builders\ServersBuilder;
 use Vyuldashev\LaravelOpenApi\Builders\TagsBuilder;
-use Vyuldashev\LaravelOpenApi\Builders\FilesBuilder;
 
 class OpenApiServiceProvider extends ServiceProvider
 {
-    public function boot(): void
+    public function register(): void
     {
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__.'/../config/openapi.php' => config_path('openapi.php'),
-            ], 'openapi-config');
-        }
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/openapi.php',
+            'openapi'
+        );
 
-        $this->registerAnnotations();
+        $this->app->bind(CallbacksBuilder::class, function () {
+            return new CallbacksBuilder($this->getPathsFromConfig('callbacks'));
+        });
 
-        CallbacksBuilder::in($this->callbacksIn());
-        RequestBodiesBuilder::in($this->requestBodiesIn());
-        ResponsesBuilder::in($this->responsesIn());
-        SchemasBuilder::in($this->schemasIn());
-        SecuritySchemesBuilder::in($this->securitySchemesIn());
+        $this->app->bind(RequestBodiesBuilder::class, function () {
+            return new RequestBodiesBuilder($this->getPathsFromConfig('request_bodies'));
+        });
 
-        $this->app->singleton(Generator::class, static function ($app) {
+        $this->app->bind(ResponsesBuilder::class, function () {
+            return new ResponsesBuilder($this->getPathsFromConfig('responses'));
+        });
+
+        $this->app->bind(SchemasBuilder::class, function () {
+            return new SchemasBuilder($this->getPathsFromConfig('schemas'));
+        });
+
+        $this->app->bind(SecuritySchemesBuilder::class, function () {
+            return new SecuritySchemesBuilder($this->getPathsFromConfig('security_schemes'));
+        });
+
+        $this->app->singleton(Generator::class, static function (Application $app) {
             $config = config('openapi');
 
             return new Generator(
                 $config,
-                $app[InfoBuilder::class],
-                $app[ServersBuilder::class],
-                $app[TagsBuilder::class],
-                $app[PathsBuilder::class],
-                $app[ComponentsBuilder::class],
-                $app[FilesBuilder::class]
+                $app->make(InfoBuilder::class),
+                $app->make(ServersBuilder::class),
+                $app->make(TagsBuilder::class),
+                $app->make(PathsBuilder::class),
+                $app->make(ComponentsBuilder::class)
             );
         });
-
-        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
-    }
-
-    public function register(): void
-    {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/openapi.php',
-            'openapi'
-        );
 
         $this->commands([
             Console\GenerateCommand::class,
@@ -77,47 +77,28 @@ class OpenApiServiceProvider extends ServiceProvider
         }
     }
 
-    protected function registerAnnotations(): void
+    public function boot(): void
     {
-        $files = glob(__DIR__.'/Annotations/*.php');
-
-        foreach ($files as $file) {
-            AnnotationRegistry::registerFile($file);
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/openapi.php' => config_path('openapi.php'),
+            ], 'openapi-config');
         }
+
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
     }
 
-    protected function callbacksIn(): array
+    private function getPathsFromConfig(string $type): array
     {
-        return [
-            app_path('OpenApi/Callbacks'),
-        ];
-    }
+        $directories = config('openapi.locations.'.$type, []);
 
-    protected function requestBodiesIn(): array
-    {
-        return [
-            app_path('OpenApi/RequestBodies'),
-        ];
-    }
+        foreach ($directories as &$directory) {
+            $directory = glob($directory, GLOB_ONLYDIR);
+        }
 
-    protected function responsesIn(): array
-    {
-        return [
-            app_path('OpenApi/Responses'),
-        ];
-    }
-
-    protected function schemasIn(): array
-    {
-        return [
-            app_path('OpenApi/Schemas'),
-        ];
-    }
-
-    protected function securitySchemesIn(): array
-    {
-        return [
-            app_path('OpenApi/SecuritySchemes'),
-        ];
+        return (new Collection($directories))
+            ->flatten()
+            ->unique()
+            ->toArray();
     }
 }
