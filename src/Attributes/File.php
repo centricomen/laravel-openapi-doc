@@ -4,8 +4,8 @@ namespace Vyuldashev\LaravelOpenApi\Attributes;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS)]
+#[Attribute(Attribute::TARGET_METHOD)]
 class File
 {
-    public $name;
+    public array $name;
 }
