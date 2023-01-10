@@ -8,4 +8,9 @@ use Attribute;
 class File
 {
     public array $name;
+
+    public function __construct(array $names)
+    {
+        $this->name = $names;
+    }
 }
