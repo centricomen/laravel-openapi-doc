@@ -9,8 +9,8 @@ class File
 {
     public array $name;
 
-    public function __construct(array $names)
+    public function __construct(array $name = [])
     {
-        $this->name = $names;
+        $this->name = $name;
     }
 }

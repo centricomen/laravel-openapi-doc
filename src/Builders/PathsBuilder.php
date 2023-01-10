@@ -93,18 +93,19 @@ class PathsBuilder
 
                 if($file == null) {
                     $file = new Attributes\File();
-                    $file->name = 'openapi.json';
+                    $file->name = ['openapi.json'];
                 }
 
-                if (is_array($file->name)) {
-                    $fileFound = false;
+                $fileFound = false;
+                if ($file && !empty($file->name)) {
                     foreach ($file->name as $item) {
                         if ($item == $self->file) {
                             $fileFound = true;
                             break;
                         }
                     }
-                } else $fileFound = $file->name == $self->file;
+
+                }
 
                 return $pathItem && $operation && $fileFound;
             });

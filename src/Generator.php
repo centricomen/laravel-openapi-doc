@@ -55,7 +55,7 @@ class Generator
                 $info = $this->infoBuilder->build(Arr::get($this->config, 'collections.' . $collection . '.info', []));
                 $servers = $this->serversBuilder->build(Arr::get($this->config, 'collections.' . $collection . '.servers', []));
                 $tags = $this->tagsBuilder->build(Arr::get($this->config, 'collections.' . $collection . '.tags', []));
-                $paths = $this->pathsBuilder->build($collection, Arr::get($middlewares, 'paths', []));
+                $paths = $this->pathsBuilder->build($collection, Arr::get($middlewares, 'paths', []), $file);
                 $components = $this->componentsBuilder->build($collection, Arr::get($middlewares, 'components', []));
                 $extensions = Arr::get($this->config, 'collections.' . $collection . '.extensions', []);
 
